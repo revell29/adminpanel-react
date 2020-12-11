@@ -1,6 +1,6 @@
-import React, { Component, Suspense } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
+import React, { useEffect, Suspense, useCallback } from "react";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { connect, useDispatch } from "react-redux";
 import Fullscreen from "react-full-screen";
 import windowSize from "react-window-size";
 
@@ -11,83 +11,107 @@ import Loader from "../Loader";
 import routes from "../../router/adminRoute";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
+import { verifyUser } from "../../../services/auth";
+import { actionLogin } from "../../modules/auth/store/actions";
 
 import "./app.scss";
 
-class AdminLayout extends Component {
-  fullScreenExitHandler = () => {
+function AdminLayout(props) {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const fullScreenExitHandler = () => {
     if (
       !document.fullscreenElement &&
       !document.webkitIsFullScreen &&
       !document.mozFullScreen &&
       !document.msFullscreenElement
     ) {
-      this.props.onFullScreenExit();
+      dispatch({ type: actionTypes.FULL_SCREEN_EXIT });
     }
   };
 
-  componentWillMount() {
-    if (
-      this.props.windowWidth > 992 &&
-      this.props.windowWidth <= 1024 &&
-      this.props.layout !== "horizontal"
-    ) {
-      this.props.onComponentWillMount();
+  const checkToken = useCallback(() => {
+    verifyUser()
+      .then((res) => {
+        dispatch(actionLogin(res));
+        console.log(res.data);
+      })
+      .catch((err) => {
+        if (err.statusCode === 401) {
+          history.push("/login");
+        }
+      });
+  }, [dispatch, history]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      checkToken();
+    }, 500);
+  }, [checkToken]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      checkToken();
+    }, 900000);
+  }, [checkToken]);
+
+  useEffect(() => {
+    if (props.windowWidth > 992 && props.windowWidth <= 1024 && props.layout !== "horizontal") {
+      dispatch({ type: actionTypes.COLLAPSE_MENU });
     }
-  }
+  }, [props]);
 
-  mobileOutClickHandler() {
-    if (this.props.windowWidth < 992 && this.props.collapseMenu) {
-      this.props.onComponentWillMount();
+  const mobileOutClickHandler = () => {
+    if (props.windowWidth < 992 && props.collapseMenu) {
+      props.onComponentWillMount();
     }
-  }
+  };
 
-  render() {
-    /* full screen exit call */
-    document.addEventListener("fullscreenchange", this.fullScreenExitHandler);
-    document.addEventListener("webkitfullscreenchange", this.fullScreenExitHandler);
-    document.addEventListener("mozfullscreenchange", this.fullScreenExitHandler);
-    document.addEventListener("MSFullscreenChange", this.fullScreenExitHandler);
+  useEffect(() => {
+    document.addEventListener("fullscreenchange", fullScreenExitHandler());
+    document.addEventListener("webkitfullscreenchange", fullScreenExitHandler());
+    document.addEventListener("mozfullscreenchange", fullScreenExitHandler());
+    document.addEventListener("MSFullscreenChange", fullScreenExitHandler());
+  });
 
-    const Menu = routes.map((route, index) => {
-      return route.component ? (
-        <Route
-          key={index}
-          path={route.path}
-          exact={route.exact}
-          name={route.name}
-          render={(props) => <route.component {...props} />}
-        />
-      ) : null;
-    });
+  const Menu = routes.map((route, index) => {
+    return route.component ? (
+      <Route
+        key={index}
+        path={route.path}
+        exact={route.exact}
+        name={route.name}
+        render={(props) => <route.component {...props} />}
+      />
+    ) : null;
+  });
 
-    return (
-      <Aux>
-        <Fullscreen enabled={this.props.isFullScreen}>
-          <Navigation />
-          <NavBar />
-          <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
-            <div className="pcoded-wrapper">
-              <div className="pcoded-content">
-                <div className="pcoded-inner-content">
-                  <Breadcrumb />
-                  <div className="main-body">
-                    <div className="page-wrapper">
-                      <Suspense fallback={<Loader />}>
-                        <Switch>
-                          {localStorage.getItem("token") ? Menu : <Redirect to="/login" />}
-                        </Switch>
-                      </Suspense>
-                    </div>
+  return (
+    <Aux>
+      <Fullscreen enabled={props.isFullScreen}>
+        <Navigation />
+        <NavBar />
+        <div className="pcoded-main-container" onClick={() => mobileOutClickHandler()}>
+          <div className="pcoded-wrapper">
+            <div className="pcoded-content">
+              <div className="pcoded-inner-content">
+                <Breadcrumb />
+                <div className="main-body">
+                  <div className="page-wrapper">
+                    <Suspense fallback={<Loader />}>
+                      <Switch>
+                        {localStorage.getItem("token") ? Menu : <Redirect to="/login" />}
+                      </Switch>
+                    </Suspense>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Fullscreen>
-      </Aux>
-    );
-  }
+        </div>
+      </Fullscreen>
+    </Aux>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -100,11 +124,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
-    onComponentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(windowSize(AdminLayout));
+export default connect(mapStateToProps)(windowSize(AdminLayout));

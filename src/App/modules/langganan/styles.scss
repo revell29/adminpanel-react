@@ -1,0 +1,29 @@
+.table-price {
+  padding: 3em;
+  border: 1px solid #4c6af0;
+  background-color: #4c6af0;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white !important;
+  text-align: center;
+
+  &:hover {
+    color: white;
+    background-color: #3851c0;
+  }
+  h4 {
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 700;
+  }
+}
+
+.box-paket {
+  border: 2px solid #ebebeb;
+  border-radius: 4px;
+  padding: 15px;
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}

@@ -5,8 +5,19 @@ window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 
-const Dashboard = React.lazy(() => import("../modules/dashboard"));
-
-const adminRoute = [{ path: "/web-app", exact: true, name: "Default", component: Dashboard }];
+const adminRoute = [
+  {
+    path: "/web-app",
+    exact: true,
+    name: "Default",
+    component: React.lazy(() => import("../modules/dashboard")),
+  },
+  {
+    path: "/langganan",
+    exact: true,
+    name: "Langganan",
+    component: React.lazy(() => import("../modules/langganan")),
+  },
+];
 
 export default adminRoute;
