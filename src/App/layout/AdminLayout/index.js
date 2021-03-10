@@ -1,20 +1,21 @@
-import React, { useEffect, Suspense, useCallback } from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
-import Fullscreen from "react-full-screen";
-import windowSize from "react-window-size";
+import React, { useEffect, Suspense, useCallback } from 'react';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { connect, useDispatch } from 'react-redux';
+import Fullscreen from 'react-full-screen';
+import windowSize from 'react-window-size';
 
-import Navigation from "./Navigation";
-import NavBar from "./NavBar";
-import Breadcrumb from "./Breadcrumb";
-import Loader from "../Loader";
-import routes from "../../router/adminRoute";
-import Aux from "../../../hoc/_Aux";
-import * as actionTypes from "../../../store/actions";
-import { verifyUser } from "../../../services/auth";
-import { actionLogin } from "../../modules/auth/store/actions";
+import Navigation from './Navigation';
+import NavBar from './NavBar';
+import Breadcrumb from './Breadcrumb';
+import Loader from '../Loader';
+import routes from '../../router/adminRoute';
+import Aux from '../../../hoc/_Aux';
+import * as actionTypes from '../../../store/actions';
+import { verifyUser } from '../../../services/auth';
+import { actionLogin } from '../../modules/auth/store/actions';
 
-import "./app.scss";
+import 'antd/dist/antd.css';
+import './app.scss';
 
 function AdminLayout(props) {
   const history = useHistory();
@@ -38,25 +39,17 @@ function AdminLayout(props) {
       })
       .catch((err) => {
         if (err.statusCode === 401) {
-          history.push("/login");
+          history.push('/login');
         }
       });
   }, [dispatch, history]);
 
   useEffect(() => {
-    setTimeout(() => {
-      checkToken();
-    }, 500);
+    checkToken();
   }, [checkToken]);
 
   useEffect(() => {
-    setTimeout(() => {
-      checkToken();
-    }, 900000);
-  }, [checkToken]);
-
-  useEffect(() => {
-    if (props.windowWidth > 992 && props.windowWidth <= 1024 && props.layout !== "horizontal") {
+    if (props.windowWidth > 992 && props.windowWidth <= 1024 && props.layout !== 'horizontal') {
       dispatch({ type: actionTypes.COLLAPSE_MENU });
     }
   }, [props]);
@@ -68,10 +61,10 @@ function AdminLayout(props) {
   };
 
   useEffect(() => {
-    document.addEventListener("fullscreenchange", fullScreenExitHandler());
-    document.addEventListener("webkitfullscreenchange", fullScreenExitHandler());
-    document.addEventListener("mozfullscreenchange", fullScreenExitHandler());
-    document.addEventListener("MSFullscreenChange", fullScreenExitHandler());
+    document.addEventListener('fullscreenchange', fullScreenExitHandler());
+    document.addEventListener('webkitfullscreenchange', fullScreenExitHandler());
+    document.addEventListener('mozfullscreenchange', fullScreenExitHandler());
+    document.addEventListener('MSFullscreenChange', fullScreenExitHandler());
   });
 
   const Menu = routes.map((route, index) => {
@@ -100,7 +93,7 @@ function AdminLayout(props) {
                   <div className="page-wrapper">
                     <Suspense fallback={<Loader />}>
                       <Switch>
-                        {localStorage.getItem("token") ? Menu : <Redirect to="/login" />}
+                        {localStorage.getItem('token') ? Menu : <Redirect to="/login" />}
                       </Switch>
                     </Suspense>
                   </div>

@@ -1,24 +1,24 @@
 export default {
   items: [
     {
-      id: "navigation",
-      title: "Navigation",
-      type: "group",
-      icon: "icon-navigation",
+      id: 'navigation',
+      title: 'Navigation',
+      type: 'group',
+      icon: 'icon-navigation',
       children: [
         {
-          id: "dashboard",
-          title: "Dashboard",
-          type: "item",
-          url: "/web-app",
-          icon: "feather icon-home",
+          id: 'dashboard',
+          title: 'Dashboard',
+          type: 'item',
+          url: '/web-app',
+          icon: 'feather icon-home',
         },
         {
-          id: "langganan",
-          title: "Langganan",
-          type: "item",
-          url: "/langganan",
-          icon: "feather icon-book",
+          id: 'siswa',
+          title: 'Siswa',
+          type: 'item',
+          url: '/siswa',
+          icon: 'feather icon-users',
         },
       ],
     },

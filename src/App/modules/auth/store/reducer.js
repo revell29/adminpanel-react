@@ -1,4 +1,4 @@
-import * as types from "./types";
+import * as types from './types';
 const userStore = {
   user: {},
   isAuthenticated: null,
@@ -7,8 +7,8 @@ const userStore = {
 export const authReducer = (state = userStore, action) => {
   switch (action.type) {
     case types.LOGIN:
-      if (!localStorage.getItem("token")) {
-        localStorage.setItem("token", action.data.token);
+      if (!localStorage.getItem('token')) {
+        localStorage.setItem('token', action.data.token);
       }
       return {
         ...state,

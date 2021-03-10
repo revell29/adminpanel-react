@@ -1,13 +1,13 @@
-import React, { useCallback, useState } from "react";
-import { useDispatch, connect } from "react-redux";
-import { Form } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import "./styles.scss";
-import "../../../assets/scss/style.scss";
-import { loginRequest } from "../../../services/auth";
-import { actionLogin } from "./store/actions";
+import React, { useCallback, useState } from 'react';
+import { useDispatch, connect } from 'react-redux';
+import { Form } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import './styles.scss';
+import '../../../assets/scss/style.scss';
+import { loginRequest } from '../../../services/auth';
+import { actionLogin } from './store/actions';
 
 function Login(props) {
   const history = useHistory();
@@ -17,10 +17,10 @@ function Login(props) {
   const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
-    if (localStorage.getItem("token")) {
-      history.push("/web-app");
+    if (localStorage.getItem('token')) {
+      history.push('/web-app');
     } else {
-      history.push("/login");
+      history.push('/login');
     }
   }, [history]);
 
@@ -28,9 +28,9 @@ function Login(props) {
     setLoading(true);
     await loginRequest(data)
       .then((res) => {
-        console.log(res.data);
-        dispatch(actionLogin(res));
-        history.push("/web-app");
+        console.log(res.user);
+        dispatch(actionLogin(res.user));
+        history.push('/web-app');
       })
       .catch((error) => console.log(error));
   };
@@ -49,7 +49,7 @@ function Login(props) {
                   placeholder="Email"
                   name="email"
                   onChange={(e) => setData({ ...data, email: e.target.value })}
-                  ref={register({ required: "Harap masukan email anda." })}
+                  ref={register({ required: 'Harap masukan email anda.' })}
                   isInvalid={errors.email}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -63,7 +63,7 @@ function Login(props) {
                   placeholder="Password"
                   name="password"
                   onChange={(e) => setData({ ...data, password: e.target.value })}
-                  ref={register({ required: "Harap masukan password anda." })}
+                  ref={register({ required: 'Harap masukan password anda.' })}
                   isInvalid={errors.password}
                 />
 
